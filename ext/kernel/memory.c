@@ -347,13 +347,13 @@ void phalcon_dump_memory_frame(phalcon_memory_entry *active_memory TSRMLS_DC)
 			fprintf(stderr, "Obs var %lu (%p => %p), type=%u, refcnt=%u; ", (ulong)i, var, *var, Z_TYPE_PP(var), Z_REFCOUNT_PP(var));
 			switch (Z_TYPE_PP(var)) {
 				case IS_NULL:     fprintf(stderr, "value=NULL\n"); break;
-				case IS_LONG:     fprintf(stderr, "value=%ld\n", Z_LVAL_PP(var)); break;
+				case IS_LONG:     fprintf(stderr, "value=%ld\n", Z_RESVAL_PP(var)); break;
 				case IS_DOUBLE:   fprintf(stderr, "value=%E\n", Z_DVAL_PP(var)); break;
 				case IS_BOOL:     fprintf(stderr, "value=(bool)%d\n", Z_BVAL_PP(var)); break;
 				case IS_ARRAY:    fprintf(stderr, "value=array(%p), %d elements\n", Z_ARRVAL_PP(var), zend_hash_num_elements(Z_ARRVAL_PP(var))); break;
 				case IS_OBJECT:   fprintf(stderr, "value=object(%u), %s\n", Z_OBJ_HANDLE_PP(var), Z_OBJCE_PP(var)->name); break;
 				case IS_STRING:   fprintf(stderr, "value=%*s (%p)\n", Z_STRLEN_PP(var), Z_STRVAL_PP(var), Z_STRVAL_PP(var)); break;
-				case IS_RESOURCE: fprintf(stderr, "value=(resource)%ld\n", Z_LVAL_PP(var)); break;
+				case IS_RESOURCE: fprintf(stderr, "value=(resource)%ld\n", Z_RESVAL_PP(var)); break;
 				default:          fprintf(stderr, "\n"); break;
 			}
 		}

@@ -174,9 +174,9 @@ int phalcon_compare_strict_long(zval *op1, long op2 TSRMLS_DC){
 
 	switch (Z_TYPE_P(op1)) {
 		case IS_LONG:
-			return Z_LVAL_P(op1) == op2;
+			return Z_RESVAL_P(op1) == op2;
 		case IS_DOUBLE:
-			return Z_LVAL_P(op1) == (double) op2;
+			return Z_RESVAL_P(op1) == (double) op2;
 		case IS_NULL:
 			return 0 == op2;
 		case IS_BOOL:
@@ -247,7 +247,7 @@ long phalcon_get_intval(const zval *op) {
 
 	switch (Z_TYPE_P(op)) {
 		case IS_LONG:
-			return Z_LVAL_P(op);
+			return Z_RESVAL_P(op);
 		case IS_BOOL:
 			return Z_BVAL_P(op);
 		case IS_DOUBLE:
@@ -256,7 +256,7 @@ long phalcon_get_intval(const zval *op) {
 			long long_value;
 			double double_value;
 			zend_uchar type;
-			
+
 			ASSUME(Z_STRVAL_P(op) != NULL);
 			type = is_numeric_string(Z_STRVAL_P(op), Z_STRLEN_P(op), &long_value, &double_value, 0);
 			if (type == IS_LONG) {

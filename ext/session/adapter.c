@@ -333,7 +333,7 @@ static int phalcon_session_adapter_count_elements(zval *object, long *count TSRM
 
 	res = phalcon_call_method(&cnt, object, "count", 0, NULL TSRMLS_CC);
 	if (res == SUCCESS) {
-		*count = (Z_TYPE_P(cnt) == IS_LONG) ? Z_LVAL_P(cnt) : phalcon_get_intval(cnt);
+		*count = (Z_TYPE_P(cnt) == IS_LONG) ? Z_RESVAL_P(cnt) : phalcon_get_intval(cnt);
 		zval_ptr_dtor(&cnt);
 	}
 

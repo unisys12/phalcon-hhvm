@@ -357,7 +357,7 @@ static int phalcon_config_compare_objects(zval *object1, zval *object2 TSRMLS_DC
 
 	zend_compare_symbol_tables(&result, zobj1->props, zobj2->props TSRMLS_CC);
 	assert(Z_TYPE_P(&result) == IS_LONG);
-	return Z_LVAL_P(&result);
+	return Z_RESVAL_P(&result);
 }
 
 /**
@@ -506,8 +506,8 @@ PHP_METHOD(Phalcon_Config, __construct){
 	zval *array_config = NULL;
 
 	phalcon_fetch_params(0, 0, 1, &array_config);
-	
-	/** 
+
+	/**
 	 * Throw exceptions if bad parameters are passed
 	 */
 	if (array_config && Z_TYPE_P(array_config) != IS_ARRAY && Z_TYPE_P(array_config) != IS_NULL) {
@@ -643,7 +643,7 @@ PHP_METHOD(Phalcon_Config, merge){
 	phalcon_config_object *obj;
 
 	phalcon_fetch_params(0, 1, 0, &config);
-	
+
 	if (Z_TYPE_P(config) != IS_OBJECT && Z_TYPE_P(config) != IS_ARRAY) {
 		zend_throw_exception_ex(phalcon_config_exception_ce, 0 TSRMLS_CC, "Configuration must be an object or array");
 		return;
@@ -660,15 +660,15 @@ PHP_METHOD(Phalcon_Config, merge){
 		array_config = config;
 		Z_ADDREF_P(array_config);
 	}
-	
+
 	phalcon_is_iterable(array_config, &ah0, &hp0, 0, 0);
-	
+
 	obj = fetchPhalconConfigObject(getThis() TSRMLS_CC);
 
 	while (zend_hash_get_current_data_ex(ah0, (void**) &hd, &hp0) == SUCCESS) {
-	
+
 		key = phalcon_get_current_key_w(ah0, &hp0);
-	
+
 		active_value = phalcon_config_read_internal(obj, &key, BP_VAR_NA TSRMLS_CC);
 
 		/**
@@ -696,10 +696,10 @@ PHP_METHOD(Phalcon_Config, merge){
 			 */
 			phalcon_config_write_internal(obj, &key, *hd TSRMLS_CC);
 		}
-	
+
 		zend_hash_move_forward_ex(ah0, &hp0);
 	}
-	
+
 	zval_ptr_dtor(&array_config);
 }
 

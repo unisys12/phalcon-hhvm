@@ -259,7 +259,7 @@ PHP_METHOD(Phalcon_Security, setRandomBytes){
 
 	PHALCON_ENSURE_IS_LONG(random_bytes);
 
-	if (Z_LVAL_PP(random_bytes) < 16) {
+	if (Z_RESVAL_PP(random_bytes) < 16) {
 		PHALCON_THROW_EXCEPTION_STRW(phalcon_security_exception_ce, "At least 16 bytes are needed to produce a correct salt");
 		return;
 	}
@@ -318,11 +318,11 @@ PHP_METHOD(Phalcon_Security, getSaltBytes)
 	phalcon_fetch_params_ex(0, 2, &number_bytes, &b64);
 	if (number_bytes) {
 		PHALCON_ENSURE_IS_LONG(number_bytes);
-		i_bytes = Z_LVAL_PP(number_bytes);
+		i_bytes = Z_RESVAL_PP(number_bytes);
 	}
 	else {
 		zval *n = phalcon_fetch_nproperty_this(this_ptr, SL("_numberBytes"), PH_NOISY TSRMLS_CC);
-		i_bytes = (Z_TYPE_P(n) == IS_LONG) ? Z_LVAL_P(n) : phalcon_get_intval(n);
+		i_bytes = (Z_TYPE_P(n) == IS_LONG) ? Z_RESVAL_P(n) : phalcon_get_intval(n);
 	}
 
 	encode = (!b64 || zend_is_true(*b64)) ? 1 : 0;
@@ -424,10 +424,10 @@ PHP_METHOD(Phalcon_Security, hash)
 		work_factor = &tmp;
 	}
 
-	i_factor = (Z_TYPE_PP(work_factor) == IS_LONG) ? Z_LVAL_PP(work_factor) : phalcon_get_intval(*work_factor);
+	i_factor = (Z_TYPE_PP(work_factor) == IS_LONG) ? Z_RESVAL_PP(work_factor) : phalcon_get_intval(*work_factor);
 
 	default_hash = phalcon_fetch_nproperty_this(getThis(), SL("_defaultHash"), PH_NOISY TSRMLS_CC);
-	i_hash       = (Z_TYPE_P(default_hash) == IS_LONG) ? Z_LVAL_P(default_hash) : phalcon_get_intval(default_hash);
+	i_hash       = (Z_TYPE_P(default_hash) == IS_LONG) ? Z_RESVAL_P(default_hash) : phalcon_get_intval(default_hash);
 
 	switch (i_hash) {
 		default:
@@ -638,7 +638,7 @@ PHP_METHOD(Phalcon_Security, checkHash){
 
 	if (max_pass_length) {
 		PHALCON_ENSURE_IS_LONG(max_pass_length);
-		if (Z_LVAL_PP(max_pass_length) > 0 && Z_STRLEN_PP(password) > Z_LVAL_PP(max_pass_length)) {
+		if (Z_RESVAL_PP(max_pass_length) > 0 && Z_STRLEN_PP(password) > Z_RESVAL_PP(max_pass_length)) {
 			RETURN_FALSE;
 		}
 	}
@@ -936,7 +936,7 @@ PHP_METHOD(Phalcon_Security, pbkdf2)
 
 	if (iterations) {
 		PHALCON_ENSURE_IS_LONG(iterations);
-		i_iterations = Z_LVAL_PP(iterations);
+		i_iterations = Z_RESVAL_PP(iterations);
 	}
 
 	if (i_iterations <= 0) {
@@ -945,7 +945,7 @@ PHP_METHOD(Phalcon_Security, pbkdf2)
 
 	if (size) {
 		PHALCON_ENSURE_IS_LONG(size);
-		i_size = Z_LVAL_PP(size);
+		i_size = Z_RESVAL_PP(size);
 	}
 
 	if (i_size < 0) {
@@ -1061,7 +1061,7 @@ PHP_METHOD(Phalcon_Security, deriveKey)
 
 	if (iterations) {
 		PHALCON_ENSURE_IS_LONG(iterations);
-		i_iterations = Z_LVAL_PP(iterations);
+		i_iterations = Z_RESVAL_PP(iterations);
 	}
 
 	if (i_iterations <= 0) {
@@ -1070,7 +1070,7 @@ PHP_METHOD(Phalcon_Security, deriveKey)
 
 	if (size) {
 		PHALCON_ENSURE_IS_LONG(size);
-		i_size = Z_LVAL_PP(size);
+		i_size = Z_RESVAL_PP(size);
 	}
 
 	if (i_size < 0) {

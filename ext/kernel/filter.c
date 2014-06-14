@@ -349,7 +349,7 @@ void phalcon_escape_html(zval *return_value, zval *str, const zval *quote_style,
 		RETURN_ZVAL(str, 1, 0);
 	}
 
-	escaped = php_escape_html_entities((unsigned char*) Z_STRVAL_P(str), Z_STRLEN_P(str), &length, 0, Z_LVAL_P(quote_style), Z_STRVAL_P(charset) TSRMLS_CC);
+	escaped = php_escape_html_entities((unsigned char*) Z_STRVAL_P(str), Z_STRLEN_P(str), &length, 0, Z_RESVAL_P(quote_style), Z_STRVAL_P(charset) TSRMLS_CC);
 
 	RETURN_STRINGL(escaped, length, 0);
 }

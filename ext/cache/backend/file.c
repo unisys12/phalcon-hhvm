@@ -198,7 +198,7 @@ PHP_METHOD(Phalcon_Cache_Backend_File, get){
 			convert_to_long(modified_time);
 		}
 
-		mtime   = Z_LVAL_P(modified_time);
+		mtime   = Z_RESVAL_P(modified_time);
 		diff    = now - ttl;
 		expired = diff > mtime;
 
@@ -469,14 +469,14 @@ PHP_METHOD(Phalcon_Cache_Backend_File, exists){
 			if (!lifetime || Z_TYPE_P(lifetime) == IS_NULL) {
 				PHALCON_CALL_METHOD(&tmp, frontend, "getlifetime");
 
-				ttl = likely(Z_TYPE_P(tmp) == IS_LONG) ? Z_LVAL_P(tmp) : phalcon_get_intval(tmp);
+				ttl = likely(Z_TYPE_P(tmp) == IS_LONG) ? Z_RESVAL_P(tmp) : phalcon_get_intval(tmp);
 			} else {
-				ttl = likely(Z_TYPE_P(lifetime) == IS_LONG) ? Z_LVAL_P(lifetime) : phalcon_get_intval(lifetime);
+				ttl = likely(Z_TYPE_P(lifetime) == IS_LONG) ? Z_RESVAL_P(lifetime) : phalcon_get_intval(lifetime);
 			}
 
 			PHALCON_INIT_VAR(modified_time);
 			phalcon_filemtime(modified_time, cache_file TSRMLS_CC);
-			mtime = likely(Z_TYPE_P(modified_time) == IS_LONG) ? Z_LVAL_P(modified_time) : phalcon_get_intval(modified_time);
+			mtime = likely(Z_TYPE_P(modified_time) == IS_LONG) ? Z_RESVAL_P(modified_time) : phalcon_get_intval(modified_time);
 
 			if (mtime + ttl > (long int)time(NULL)) {
 				RETURN_MM_TRUE;
@@ -557,7 +557,7 @@ PHP_METHOD(Phalcon_Cache_Backend_File, increment){
 			convert_to_long(modified_time);
 		}
 
-		mtime   = Z_LVAL_P(modified_time);
+		mtime   = Z_RESVAL_P(modified_time);
 		diff    = now - ttl;
 		expired = diff > mtime;
 
@@ -664,7 +664,7 @@ PHP_METHOD(Phalcon_Cache_Backend_File, decrement){
 			convert_to_long(modified_time);
 		}
 
-		mtime   = Z_LVAL_P(modified_time);
+		mtime   = Z_RESVAL_P(modified_time);
 		diff    = now - ttl;
 		expired = diff > mtime;
 

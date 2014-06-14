@@ -461,7 +461,7 @@ static int phalcon_registry_compare_objects(zval *object1, zval *object2 TSRMLS_
 
 	zend_compare_symbol_tables(&result, Z_ARRVAL_P(zobj1->properties), Z_ARRVAL_P(zobj2->properties) TSRMLS_CC);
 	assert(Z_TYPE_P(&result) == IS_LONG);
-	return Z_LVAL_P(&result);
+	return Z_RESVAL_P(&result);
 }
 
 /**

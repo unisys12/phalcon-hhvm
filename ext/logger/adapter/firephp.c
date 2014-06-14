@@ -167,7 +167,7 @@ PHP_METHOD(Phalcon_Logger_Adapter_Firephp, logInternal){
 
 	while (size > 0) {
 		smart_str_appends(&str, "X-Wf-1-1-1-");
-		smart_str_append_long(&str, Z_LVAL_P(index));
+		smart_str_append_long(&str, Z_RESVAL_P(index));
 		smart_str_appends(&str, ": ");
 		num_bytes = size > chunk ? chunk : size;
 
@@ -194,7 +194,7 @@ PHP_METHOD(Phalcon_Logger_Adapter_Firephp, logInternal){
 		h.line_len = str.len;
 		sapi_header_op(SAPI_HEADER_REPLACE, &h TSRMLS_CC);
 
-		ZVAL_LONG(index, Z_LVAL_P(index)+1);
+		ZVAL_LONG(index, Z_RESVAL_P(index)+1);
 
 		/**
 		 * Do not free and then reallocate memory. Just pretend the string

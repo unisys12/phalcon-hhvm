@@ -133,11 +133,11 @@ void phalcon_append_printable_zval(smart_str *implstr, zval **tmp TSRMLS_DC) {
 			break;
 
 		case IS_LONG:
-			smart_str_append_long(implstr, Z_LVAL_PP(tmp));
+			smart_str_append_long(implstr, Z_RESVAL_PP(tmp));
 			break;
 
 		case IS_BOOL:
-			if (Z_LVAL_PP(tmp) == 1) {
+			if (Z_RESVAL_PP(tmp) == 1) {
 				smart_str_appendl(implstr, "1", sizeof("1") - 1);
 			}
 			break;
@@ -741,7 +741,7 @@ void phalcon_random_string(zval *return_value, const zval *type, const zval *len
 		return;
 	}
 
-	if (Z_LVAL_P(type) > PH_RANDOM_NOZERO) {
+	if (Z_RESVAL_P(type) > PH_RANDOM_NOZERO) {
 		return;
 	}
 
@@ -754,9 +754,9 @@ void phalcon_random_string(zval *return_value, const zval *type, const zval *len
 		php_mt_srand(GENERATE_SEED() TSRMLS_CC);
 	}
 
-	for (i = 0; i < Z_LVAL_P(length); i++) {
+	for (i = 0; i < Z_RESVAL_P(length); i++) {
 
-		switch (Z_LVAL_P(type)) {
+		switch (Z_RESVAL_P(type)) {
 			case PH_RANDOM_ALNUM:
 				rand_type = (long) (php_mt_rand(TSRMLS_C) >> 1);
 				RAND_RANGE(rand_type, 0, 3, PHP_MT_RAND_MAX);
@@ -1296,7 +1296,7 @@ void phalcon_htmlspecialchars(zval *return_value, zval *string, zval *quoting, z
 	}
 
 	cs = (charset && Z_TYPE_P(charset) == IS_STRING) ? Z_STRVAL_P(charset) : NULL;
-	qs = (quoting && Z_TYPE_P(quoting) == IS_LONG)   ? Z_LVAL_P(quoting)   : ENT_COMPAT;
+	qs = (quoting && Z_TYPE_P(quoting) == IS_LONG)   ? Z_RESVAL_P(quoting)   : ENT_COMPAT;
 
 	escaped = php_escape_html_entities_ex((unsigned char *)(Z_STRVAL_P(string)), Z_STRLEN_P(string), &escaped_len, 0, qs, cs, 1 TSRMLS_CC);
 	ZVAL_STRINGL(return_value, escaped, escaped_len, 0);
@@ -1325,7 +1325,7 @@ void phalcon_htmlentities(zval *return_value, zval *string, zval *quoting, zval 
 	}
 
 	cs = (charset && Z_TYPE_P(charset) == IS_STRING) ? Z_STRVAL_P(charset) : NULL;
-	qs = (quoting && Z_TYPE_P(quoting) == IS_LONG)   ? Z_LVAL_P(quoting)   : ENT_COMPAT;
+	qs = (quoting && Z_TYPE_P(quoting) == IS_LONG)   ? Z_RESVAL_P(quoting)   : ENT_COMPAT;
 
 	escaped = php_escape_html_entities_ex((unsigned char *)(Z_STRVAL_P(string)), Z_STRLEN_P(string), &escaped_len, 1, qs, cs, 1 TSRMLS_CC);
 	ZVAL_STRINGL(return_value, escaped, escaped_len, 0);
@@ -1405,7 +1405,7 @@ void phalcon_add_trailing_slash(zval** v)
 #else
 		if (c[len - 1] != PHP_DIR_SEPARATOR)
 #endif
-		{            
+		{
 			SEPARATE_ZVAL(v);
 			c = Z_STRVAL_PP(v);
 

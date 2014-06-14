@@ -160,18 +160,18 @@ static void phalcon_execute_internal(zend_execute_data *execute_data_ptr, int re
 		ok = 0;
 		fprintf(stderr, "Z_TYPE_P(PHALCON_GLOBAL(z_zero)) != IS_LONG (%d != %d)\n", Z_TYPE_P(pg->z_zero), IS_LONG);
 	}
-	else if (Z_LVAL_P(pg->z_zero) != 0) {
+	else if (Z_RESVAL_P(pg->z_zero) != 0) {
 		ok = 0;
-		fprintf(stderr, "Z_LVAL_P(PHALCON_GLOBAL(z_zero)) != 0 (%ld)\n", Z_LVAL_P(pg->z_zero));
+		fprintf(stderr, "Z_RESVAL_P(PHALCON_GLOBAL(z_zero)) != 0 (%ld)\n", Z_RESVAL_P(pg->z_zero));
 	}
 
 	if (Z_TYPE_P(pg->z_one) != IS_LONG) {
 		ok = 0;
 		fprintf(stderr, "Z_TYPE_P(PHALCON_GLOBAL(z_one)) != IS_LONG (%d != %d)\n", Z_TYPE_P(pg->z_one), IS_LONG);
 	}
-	else if (Z_LVAL_P(pg->z_one) != 1) {
+	else if (Z_RESVAL_P(pg->z_one) != 1) {
 		ok = 0;
-		fprintf(stderr, "Z_LVAL_P(PHALCON_GLOBAL(z_one)) != 1 (%ld)\n", Z_LVAL_P(pg->z_one));
+		fprintf(stderr, "Z_RESVAL_P(PHALCON_GLOBAL(z_one)) != 1 (%ld)\n", Z_RESVAL_P(pg->z_one));
 	}
 
 	if (!ok) {

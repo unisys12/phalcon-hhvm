@@ -471,7 +471,7 @@ PHP_METHOD(Phalcon_Crypt, encrypt){
 		convert_to_long(iv_size);
 	}
 
-	if (Z_STRLEN_P(encrypt_key) > Z_LVAL_P(iv_size)) {
+	if (Z_STRLEN_P(encrypt_key) > Z_RESVAL_P(iv_size)) {
 		PHALCON_THROW_EXCEPTION_STR(phalcon_crypt_exception_ce, "Size of key is too large for this algorithm");
 		return;
 	}
@@ -497,7 +497,7 @@ PHP_METHOD(Phalcon_Crypt, encrypt){
 	assert(Z_TYPE_P(text) == IS_STRING);
 
 	PHALCON_INIT_VAR(padded);
-	phalcon_crypt_pad_text(padded, text, mode, Z_LVAL_P(block_size), Z_LVAL_P(padding_type) TSRMLS_CC);
+	phalcon_crypt_pad_text(padded, text, mode, Z_RESVAL_P(block_size), Z_RESVAL_P(padding_type) TSRMLS_CC);
 	assert(Z_TYPE_P(padded) == IS_STRING);
 
 	PHALCON_CALL_FUNCTION(&encrypt, "mcrypt_encrypt", cipher, encrypt_key, padded, mode, iv);
@@ -566,10 +566,10 @@ PHP_METHOD(Phalcon_Crypt, decrypt){
 	}
 
 	PHALCON_INIT_VAR(iv);
-	phalcon_substr(iv, text, 0, Z_LVAL_P(iv_size));
+	phalcon_substr(iv, text, 0, Z_RESVAL_P(iv_size));
 
 	PHALCON_INIT_VAR(text_to_decipher);
-	phalcon_substr(text_to_decipher, text, Z_LVAL_P(iv_size), 0);
+	phalcon_substr(text_to_decipher, text, Z_RESVAL_P(iv_size), 0);
 
 	PHALCON_CALL_FUNCTION(&decrypted, "mcrypt_decrypt", cipher, decrypt_key, text_to_decipher, mode, iv);
 	if (unlikely(Z_TYPE_P(decrypted) != IS_STRING)) {
@@ -588,7 +588,7 @@ PHP_METHOD(Phalcon_Crypt, decrypt){
 	assert(Z_TYPE_P(mode) == IS_STRING);
 	assert(Z_TYPE_P(decrypted) == IS_STRING);
 
-	phalcon_crypt_unpad_text(return_value, decrypted, mode, Z_LVAL_P(block_size), Z_LVAL_P(padding_type) TSRMLS_CC);
+	phalcon_crypt_unpad_text(return_value, decrypted, mode, Z_RESVAL_P(block_size), Z_RESVAL_P(padding_type) TSRMLS_CC);
 	RETURN_MM();
 }
 

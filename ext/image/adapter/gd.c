@@ -147,7 +147,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, check){
 		if (phalcon_array_isset_string_fetch(&gd_version, gd_info, SS("GD Version"))) {
 
 			PHALCON_INIT_VAR(matches);
-		
+
 			PHALCON_INIT_VAR(pattern);
 			ZVAL_STRING(pattern, "#\\d+\\.\\d+(?:\\.\\d+)?#", 1);
 
@@ -210,7 +210,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, __construct){
 	if (!zend_is_true(checked)) {
 		PHALCON_CALL_CE_STATIC(NULL, phalcon_image_adapter_gd_ce, "check");
 	}
-	
+
 	phalcon_update_property_this(this_ptr, SL("_file"), file TSRMLS_CC);
 
 	if (phalcon_file_exists(file TSRMLS_CC) != FAILURE) {
@@ -256,7 +256,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, __construct){
 
 		assert(Z_TYPE_P(type) == IS_LONG);
 
-		switch (Z_LVAL_P(type)) {
+		switch (Z_RESVAL_P(type)) {
 			case 1: // GIF
 				PHALCON_CALL_FUNCTION(&image, "imagecreatefromgif", realpath);
 				break;
@@ -307,7 +307,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, __construct){
 
 		PHALCON_CALL_FUNCTION(NULL, "imagealphablending", image, blendmode);
 		PHALCON_CALL_FUNCTION(NULL, "imagesavealpha", image, saveflag);
-		
+
 		phalcon_update_property_this(this_ptr, SL("_realpath"), file TSRMLS_CC);
 		phalcon_update_property_this(this_ptr, SL("_width"), width TSRMLS_CC);
 		phalcon_update_property_this(this_ptr, SL("_height"), height TSRMLS_CC);
@@ -434,7 +434,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, _resize) {
  *
  * @param int $width   new width
  * @param int $height  new height
- * @param int $delta_x How much the seam can traverse on x-axis. Passing 0 causes the seams to be straight. 
+ * @param int $delta_x How much the seam can traverse on x-axis. Passing 0 causes the seams to be straight.
  * @param int $rigidity Introduces a bias for non-straight seams. This parameter is typically 0.
  * @return Phalcon\Image\Adapter
  */
@@ -582,10 +582,10 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, _flip) {
 
 		PHALCON_CALL_METHOD(&flipped_image, this_ptr, "_create", width, height);
 
-		w = Z_LVAL_P(width);
-		h = Z_LVAL_P(height);
+		w = Z_RESVAL_P(width);
+		h = Z_RESVAL_P(height);
 
-		if (Z_LVAL_P(direction) == PHALCON_IMAGE_HORIZONTAL) {
+		if (Z_RESVAL_P(direction) == PHALCON_IMAGE_HORIZONTAL) {
 			PHALCON_INIT_NVAR(dst_y);
 			ZVAL_LONG(dst_y, 0);
 
@@ -638,7 +638,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, _flip) {
 	}
 	else {
 		PHALCON_INIT_VAR(mode);
-		if (Z_LVAL_P(direction) == PHALCON_IMAGE_HORIZONTAL) {
+		if (Z_RESVAL_P(direction) == PHALCON_IMAGE_HORIZONTAL) {
 			if (!zend_get_constant(SL("IMG_FLIP_HORIZONTAL"), mode TSRMLS_CC)) {
 				RETURN_MM();
 			}
@@ -883,7 +883,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, _watermark) {
 	PHALCON_CALL_FUNCTION(&width, "imagesx", overlay);
 	PHALCON_CALL_FUNCTION(&height, "imagesy", overlay);
 
-	int_opacity = Z_LVAL_P(opacity);
+	int_opacity = Z_RESVAL_P(opacity);
 	if (int_opacity < 100) {
 		num = (int_opacity * 127.0 / 100) - 127;
 
@@ -963,11 +963,11 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, _text) {
 
 	PHALCON_OBS_VAR(image_height);
 	phalcon_read_property_this(&image_height, this_ptr, SL("_height"), PH_NOISY TSRMLS_CC);
-	
+
 	w = phalcon_get_intval(image_width);
 	h = phalcon_get_intval(image_height);
 
-	i = Z_LVAL_P(opacity);
+	i = Z_RESVAL_P(opacity);
 
 	i = (int)((i * 127 / 100) - 127);
 
@@ -1149,7 +1149,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, _mask){
 
 		PHALCON_CPY_WRT(mask_image, temp_image);
 	}
-	
+
 	w = phalcon_get_intval(image_width);
 	h = phalcon_get_intval(image_height);
 
@@ -1212,7 +1212,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, _background) {
 	width  = phalcon_fetch_nproperty_this(this_ptr, SL("_width"), PH_NOISY TSRMLS_CC);
 	height = phalcon_fetch_nproperty_this(this_ptr, SL("_height"), PH_NOISY TSRMLS_CC);
 
-	int_opacity = Z_LVAL_P(opacity);
+	int_opacity = Z_RESVAL_P(opacity);
 
 	num = (int_opacity * 127.0 / 100) - 127;
 
@@ -1261,7 +1261,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, _blur){
 
 	PHALCON_MM_GROW();
 
-	phalcon_fetch_params(1, 1, 0, &radius);	
+	phalcon_fetch_params(1, 1, 0, &radius);
 
 	image = phalcon_fetch_nproperty_this(this_ptr, SL("_image"), PH_NOISY TSRMLS_CC);
 
@@ -1370,7 +1370,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, _save) {
 	if (strcmp(ext, "gif") == 0) {
 		PHALCON_INIT_VAR(type);
 		ZVAL_LONG(type, 1);
-			
+
 		PHALCON_INIT_NVAR(q);
 
 		func_name = "imagegif";
@@ -1384,7 +1384,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, _save) {
 	} else if (strcmp(ext, "png") == 0) {
 		PHALCON_INIT_VAR(type);
 		ZVAL_LONG(type, 3);
-			
+
 		PHALCON_INIT_NVAR(q);
 		ZVAL_LONG(q, 9);
 
@@ -1395,7 +1395,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, _save) {
 		PHALCON_THROW_EXCEPTION_ZVAL(phalcon_image_exception_ce, exception_message);
 		return;
 	}
-	
+
 	image = phalcon_fetch_nproperty_this(this_ptr, SL("_image"), PH_NOISY TSRMLS_CC);
 
 	if (Z_TYPE_P(quality) == IS_LONG) {
@@ -1446,7 +1446,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, _render) {
 	if (strcmp(ext, "gif") == 0) {
 		PHALCON_INIT_VAR(type);
 		ZVAL_LONG(type, 1);
-			
+
 		PHALCON_INIT_NVAR(q);
 
 		func_name = "imagegif";
@@ -1460,7 +1460,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, _render) {
 	} else if (strcmp(ext, "png") == 0) {
 		PHALCON_INIT_VAR(type);
 		ZVAL_LONG(type, 3);
-			
+
 		PHALCON_INIT_NVAR(q);
 		ZVAL_LONG(q, 9);
 
@@ -1471,7 +1471,7 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, _render) {
 		PHALCON_THROW_EXCEPTION_ZVAL(phalcon_image_exception_ce, exception_message);
 		return;
 	}
-	
+
 	image = phalcon_fetch_nproperty_this(this_ptr, SL("_image"), PH_NOISY TSRMLS_CC);
 
 	phalcon_ob_start(TSRMLS_C);
@@ -1543,6 +1543,6 @@ PHP_METHOD(Phalcon_Image_Adapter_GD, __destruct){
 	if (Z_TYPE_P(image) == IS_RESOURCE) {
 		PHALCON_CALL_FUNCTION(NULL, "imagedestroy", image);
 	}
-	
+
 	PHALCON_MM_RESTORE();
 }

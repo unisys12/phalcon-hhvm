@@ -239,12 +239,12 @@ PHP_METHOD(Phalcon_Logger_Adapter, commit){
 		PHALCON_THROW_EXCEPTION_STRW(phalcon_logger_exception_ce, "There is no active transaction");
 		return;
 	}
-	
+
 	phalcon_update_property_bool(this_ptr, SL("_transaction"), 0 TSRMLS_CC);
-	
+
 	/* Check if the queue has something to log */
 	queue = phalcon_fetch_nproperty_this(this_ptr, SL("_queue"), PH_NOISY TSRMLS_CC);
-	if (Z_TYPE_P(queue) == IS_ARRAY) { 
+	if (Z_TYPE_P(queue) == IS_ARRAY) {
 		HashPosition hp;
 		zval **message;
 
@@ -273,7 +273,7 @@ PHP_METHOD(Phalcon_Logger_Adapter, commit){
 
 		PHALCON_MM_RESTORE();
 	}
-	
+
 	RETURN_THISW();
 }
 
@@ -291,13 +291,13 @@ PHP_METHOD(Phalcon_Logger_Adapter, rollback){
 		PHALCON_THROW_EXCEPTION_STRW(phalcon_logger_exception_ce, "There is no active transaction");
 		return;
 	}
-	
+
 	phalcon_update_property_bool(this_ptr, SL("_transaction"), 0 TSRMLS_CC);
-	
+
 	PHALCON_ALLOC_GHOST_ZVAL(queue);
 	array_init_size(queue, 0);
 	phalcon_update_property_this(this_ptr, SL("_queue"), queue TSRMLS_CC);
-	
+
 	RETURN_THISW();
 }
 
@@ -470,7 +470,7 @@ PHP_METHOD(Phalcon_Logger_Adapter, log){
 	}
 	else {
 		PHALCON_ENSURE_IS_LONG(type);
-		i_level = Z_LVAL_PP(type);
+		i_level = Z_RESVAL_PP(type);
 	}
 
 	log_level = phalcon_fetch_nproperty_this(this_ptr, SL("_logLevel"), PH_NOISY TSRMLS_CC);

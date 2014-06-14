@@ -124,11 +124,11 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, __construct){
 	PHALCON_MM_GROW();
 
 	phalcon_fetch_params(1, 1, 1, &frontend, &options);
-	
+
 	if (!options) {
 		options = PHALCON_GLOBAL(z_null);
 	}
-	
+
 	if (!phalcon_array_isset_string(options, SS("mongo"))) {
 		if (!phalcon_array_isset_string(options, SS("server"))) {
 			PHALCON_THROW_EXCEPTION_STR(phalcon_cache_exception_ce, "The parameter 'server' is required");
@@ -139,14 +139,14 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, __construct){
 		PHALCON_THROW_EXCEPTION_STR(phalcon_cache_exception_ce, "The parameter 'db' is required");
 		return;
 	}
-	
+
 	if (!phalcon_array_isset_string(options, SS("collection"))) {
 		PHALCON_THROW_EXCEPTION_STR(phalcon_cache_exception_ce, "The parameter 'collection' is required");
 		return;
 	}
-	
+
 	PHALCON_CALL_PARENT(NULL, phalcon_cache_backend_mongo_ce, this_ptr, "__construct", frontend, options);
-	
+
 	PHALCON_MM_RESTORE();
 }
 
@@ -168,8 +168,8 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, _getCollection){
 		zval *server = NULL, *database = NULL, *collection = NULL;
 
 		options = phalcon_fetch_nproperty_this(this_ptr, SL("_options"), PH_NOISY TSRMLS_CC);
-	
-		/** 
+
+		/**
 		 * If mongo is defined a valid Mongo object must be passed
 		 */
 		if (phalcon_array_isset_string_fetch(&mongo, options, SS("mongo"))) {
@@ -178,7 +178,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, _getCollection){
 				return;
 			}
 		} else {
-			/** 
+			/**
 			 * Server must be defined otherwise
 			 */
 			phalcon_array_isset_string_fetch(&server, options, SS("server"));
@@ -186,16 +186,16 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, _getCollection){
 				PHALCON_THROW_EXCEPTION_STR(phalcon_cache_exception_ce, "The backend requires a valid MongoDB connection string");
 				return;
 			}
-	
+
 			ce0 = zend_fetch_class(SL("MongoClient"), ZEND_FETCH_CLASS_AUTO TSRMLS_CC);
-	
+
 			PHALCON_INIT_VAR(mongo);
 			object_init_ex(mongo, ce0);
 			assert(phalcon_has_constructor(mongo TSRMLS_CC));
 			PHALCON_CALL_METHOD(NULL, mongo, "__construct", server);
 		}
-	
-		/** 
+
+		/**
 		 * Check if the database name is a string
 		 */
 		phalcon_array_isset_string_fetch(&database, options, SS("db"));
@@ -203,8 +203,8 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, _getCollection){
 			PHALCON_THROW_EXCEPTION_STR(phalcon_cache_exception_ce, "The backend requires a valid MongoDB db");
 			return;
 		}
-	
-		/** 
+
+		/**
 		 * Retrieve the connection name
 		 */
 		phalcon_array_isset_string_fetch(&collection, options, SS("collection"));
@@ -212,8 +212,8 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, _getCollection){
 			PHALCON_THROW_EXCEPTION_STR(phalcon_cache_exception_ce, "The backend requires a valid MongoDB collection");
 			return;
 		}
-	
-		/** 
+
+		/**
 		 * Make the connection and get the collection
 		 */
 		PHALCON_CALL_METHOD(&mongo_database, mongo, "selectdb", database);
@@ -222,7 +222,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, _getCollection){
 	else {
 		RETVAL_ZVAL(mongo_collection, 1, 0);
 	}
-	
+
 	PHALCON_MM_RESTORE();
 }
 
@@ -242,27 +242,27 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, get){
 	PHALCON_MM_GROW();
 
 	phalcon_fetch_params(1, 1, 1, &key_name, &lifetime);
-	
+
 	frontend = phalcon_fetch_nproperty_this(this_ptr, SL("_frontend"), PH_NOISY TSRMLS_CC);
 	prefix   = phalcon_fetch_nproperty_this(this_ptr, SL("_prefix"), PH_NOISY TSRMLS_CC);
-	
+
 	PHALCON_INIT_VAR(prefixed_key);
 	PHALCON_CONCAT_VV(prefixed_key, prefix, key_name);
 	phalcon_update_property_this(this_ptr, SL("_lastKey"), prefixed_key TSRMLS_CC);
-	
+
 	PHALCON_CALL_METHOD(&collection, this_ptr, "_getcollection");
-	
+
 	PHALCON_INIT_VAR(conditions);
 	array_init_size(conditions, 2);
 	phalcon_array_update_string(&conditions, SL("key"), prefixed_key, PH_COPY);
-	
+
 	MAKE_STD_ZVAL(time_condition);
 	array_init_size(time_condition, 1);
 	add_assoc_long_ex(time_condition, SS("$gt"), (long int)time(NULL));
 	add_assoc_zval_ex(conditions, SS("time"), time_condition);
 
 	PHALCON_CALL_METHOD(&document, collection, "findone", conditions);
-	if (Z_TYPE_P(document) == IS_ARRAY) { 
+	if (Z_TYPE_P(document) == IS_ARRAY) {
 		if (likely(phalcon_array_isset_string_fetch(&cached_content, document, SS("data")))) {
 			if (phalcon_is_numeric(cached_content)) {
 				RETURN_CCTOR(cached_content);
@@ -277,7 +277,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, get){
 	} else {
 		RETURN_MM_NULL();
 	}
-	
+
 }
 
 /**
@@ -298,12 +298,12 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, save){
 	PHALCON_MM_GROW();
 
 	phalcon_fetch_params(1, 0, 4, &key_name, &content, &lifetime, &stop_buffer);
-	
+
 	if (!key_name || Z_TYPE_P(key_name) == IS_NULL) {
 		last_key = phalcon_fetch_nproperty_this(this_ptr, SL("_lastKey"), PH_NOISY TSRMLS_CC);
 	} else {
 		zval *prefix = phalcon_fetch_nproperty_this(this_ptr, SL("_prefix"), PH_NOISY TSRMLS_CC);
-	
+
 		PHALCON_INIT_VAR(last_key);
 		PHALCON_CONCAT_VV(last_key, prefix, key_name);
 	}
@@ -312,7 +312,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, save){
 		PHALCON_THROW_EXCEPTION_STR(phalcon_cache_exception_ce, "The cache must be started first");
 		return;
 	}
-	
+
 	frontend = phalcon_fetch_nproperty_this(this_ptr, SL("_frontend"), PH_NOISY TSRMLS_CC);
 	if (!content || Z_TYPE_P(content) == IS_NULL) {
 		PHALCON_CALL_METHOD(&cached_content, frontend, "getcontent");
@@ -336,19 +336,19 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, save){
 	} else {
 		ttl = lifetime;
 	}
-	
+
 	PHALCON_CALL_METHOD(&collection, this_ptr, "_getcollection");
-	
+
 	PHALCON_INIT_VAR(timestamp);
 	ZVAL_LONG(timestamp, (long) time(NULL) + phalcon_get_intval(ttl));
-	
+
 	PHALCON_INIT_VAR(conditions);
 	array_init_size(conditions, 1);
 	phalcon_array_update_string(&conditions, SL("key"), last_key, PH_COPY);
-	
+
 	PHALCON_CALL_METHOD(&document, collection, "findone", conditions);
 
-	if (Z_TYPE_P(document) == IS_ARRAY) { 
+	if (Z_TYPE_P(document) == IS_ARRAY) {
 		phalcon_array_update_string(&document, SL("time"), timestamp, PH_COPY);
 		if (prepared_content) {
 			phalcon_array_update_string(&document, SL("data"), prepared_content, PH_COPY);
@@ -370,7 +370,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, save){
 
 		PHALCON_CALL_METHOD(NULL, collection, "save", data);
 	}
-	
+
 	PHALCON_CALL_METHOD(&is_buffering, frontend, "isbuffering");
 
 	if (!stop_buffer || PHALCON_IS_TRUE(stop_buffer)) {
@@ -380,9 +380,9 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, save){
 	if (PHALCON_IS_TRUE(is_buffering)) {
 		zend_print_zval(cached_content, 0);
 	}
-	
+
 	phalcon_update_property_bool(this_ptr, SL("_started"), 0 TSRMLS_CC);
-	
+
 	PHALCON_MM_RESTORE();
 }
 
@@ -400,14 +400,14 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, delete){
 	PHALCON_MM_GROW();
 
 	phalcon_fetch_params(1, 1, 0, &key_name);
-	
+
 	prefix = phalcon_fetch_nproperty_this(this_ptr, SL("_prefix"), PH_NOISY TSRMLS_CC);
-	
+
 	PHALCON_INIT_VAR(prefixed_key);
 	PHALCON_CONCAT_VV(prefixed_key, prefix, key_name);
-	
+
 	PHALCON_CALL_METHOD(&collection, this_ptr, "_getcollection");
-	
+
 	PHALCON_INIT_VAR(conditions);
 	array_init_size(conditions, 1);
 	phalcon_array_update_string(&conditions, SL("key"), prefixed_key, PH_COPY);
@@ -438,9 +438,9 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, queryKeys){
 	PHALCON_MM_GROW();
 
 	phalcon_fetch_params(1, 0, 1, &prefix);
-	
+
 	PHALCON_CALL_METHOD(&collection, this_ptr, "_getcollection");
-	
+
 	PHALCON_INIT_VAR(fields);
 	array_init_size(fields, 1);
 	add_next_index_stringl(fields, SL("key"), 1);
@@ -452,38 +452,38 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, queryKeys){
 		PHALCON_INIT_VAR(pattern);
 		PHALCON_CONCAT_SVS(pattern, "/^", prefix, "/");
 		ce0 = zend_fetch_class(SL("MongoRegex"), ZEND_FETCH_CLASS_AUTO TSRMLS_CC);
-	
+
 		PHALCON_INIT_VAR(regex);
 		object_init_ex(regex, ce0);
 		assert(phalcon_has_constructor(regex TSRMLS_CC));
 		PHALCON_CALL_METHOD(NULL, regex, "__construct", pattern);
-	
+
 		phalcon_array_update_string(&conditions, SL("key"), regex, PH_COPY);
 	}
-	
+
 	MAKE_STD_ZVAL(time_condition);
 	array_init_size(time_condition, 1);
 	add_assoc_long_ex(time_condition, SS("$gt"), (long int)time(NULL));
 	phalcon_array_update_string(&conditions, SL("time"), time_condition, 0);
 
 	PHALCON_CALL_METHOD(&documents, collection, "find", conditions, fields);
-	
+
 	array_init(return_value);
-	
+
 	PHALCON_CALL_FUNCTION(&documents_array, "iterator_to_array", documents);
 
 	phalcon_is_iterable(documents_array, &ah0, &hp0, 0, 0);
-	
+
 	while (zend_hash_get_current_data_ex(ah0, (void**) &hd, &hp0) == SUCCESS) {
 		zval *key;
 		if (likely(phalcon_array_isset_string_fetch(&key, *hd, SS("key")))) {
 			Z_ADDREF_P(key);
 			add_next_index_zval(return_value, key);
 		}
-	
+
 		zend_hash_move_forward_ex(ah0, &hp0);
 	}
-	
+
 	PHALCON_MM_RESTORE();
 }
 
@@ -503,12 +503,12 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, exists){
 	PHALCON_MM_GROW();
 
 	phalcon_fetch_params(1, 0, 2, &key_name, &lifetime);
-	
+
 	if (!key_name || Z_TYPE_P(key_name) == IS_NULL) {
 		last_key = phalcon_fetch_nproperty_this(this_ptr, SL("_lastKey"), PH_NOISY TSRMLS_CC);
 	} else {
 		zval *prefix = phalcon_fetch_nproperty_this(this_ptr, SL("_prefix"), PH_NOISY TSRMLS_CC);
-	
+
 		PHALCON_INIT_VAR(last_key);
 		PHALCON_CONCAT_VV(last_key, prefix, key_name);
 	}
@@ -517,7 +517,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, exists){
 		long int n;
 
 		PHALCON_CALL_METHOD(&collection, this_ptr, "_getcollection");
-	
+
 		PHALCON_INIT_VAR(conditions);
 		array_init_size(conditions, 2);
 		phalcon_array_update_string(&conditions, SL("key"), last_key, PH_COPY);
@@ -526,17 +526,17 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, exists){
 		array_init_size(time_condition, 1);
 		add_assoc_long_ex(time_condition, SS("$gt"), (long int)time(NULL));
 		phalcon_array_update_string(&conditions, SL("time"), time_condition, 0);
-	
+
 		PHALCON_CALL_METHOD(&number, collection, "count", conditions);
 
-		n = likely(Z_TYPE_P(number) == IS_LONG) ? Z_LVAL_P(number) : phalcon_get_intval(number);
+		n = likely(Z_TYPE_P(number) == IS_LONG) ? Z_RESVAL_P(number) : phalcon_get_intval(number);
 
 		RETVAL_BOOL(n > 0);
 	}
 	else {
 		RETVAL_FALSE;
 	}
-	
+
 	PHALCON_MM_RESTORE();
 }
 
@@ -581,33 +581,33 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, increment){
 	if (!value) {
 		PHALCON_INIT_VAR(value);
 		ZVAL_LONG(value, 1);
-	} 
+	}
 
 	if(Z_TYPE_P(value) == IS_NULL) {
 		ZVAL_LONG(value, 1);
 	}
 
-	if (Z_TYPE_P(value) != IS_LONG) {	
+	if (Z_TYPE_P(value) != IS_LONG) {
 		PHALCON_SEPARATE_PARAM(value);
 		convert_to_long_ex(&value);
 	}
 
 	PHALCON_OBS_VAR(frontend);
 	phalcon_read_property_this(&frontend, this_ptr, SL("_frontend"), PH_NOISY TSRMLS_CC);
-	
+
 	PHALCON_OBS_VAR(prefix);
 	phalcon_read_property_this(&prefix, this_ptr, SL("_prefix"), PH_NOISY TSRMLS_CC);
 
 	PHALCON_INIT_VAR(prefixed_key);
 	PHALCON_CONCAT_VV(prefixed_key, prefix, key_name);
 	phalcon_update_property_this(this_ptr, SL("_lastKey"), prefixed_key TSRMLS_CC);
-	
+
 	PHALCON_CALL_METHOD(&collection, this_ptr, "_getcollection");
-	
+
 	PHALCON_INIT_VAR(conditions);
 	array_init_size(conditions, 1);
 	phalcon_array_update_string(&conditions, SL("key"), prefixed_key, PH_COPY);
-	
+
 	PHALCON_CALL_METHOD(&document, collection, "findone", conditions);
 
 	PHALCON_INIT_VAR(timestamp);
@@ -625,22 +625,22 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, increment){
 	/*
 	 * phalcon_add_function(newlifetime, ttl, timestamp TSRMLS_CC);
 	 */
-	
+
 	if (!phalcon_array_isset_string(document, SS("time"))) {
 		PHALCON_THROW_EXCEPTION_STR(phalcon_cache_exception_ce, "The cache is currupted");
 		return;
 	}
-	
+
 	PHALCON_OBS_VAR(modified_time);
 	phalcon_array_fetch_string(&modified_time, document, SL("time"), PH_NOISY);
-	
+
 	PHALCON_INIT_VAR(difference);
 	sub_function(difference, timestamp, ttl TSRMLS_CC);
-	
+
 	PHALCON_INIT_VAR(not_expired);
 	is_smaller_function(not_expired, difference, modified_time TSRMLS_CC);
-	
-	/** 
+
+	/**
 	 * The expiration is based on the column 'time'
 	 */
 	if (PHALCON_IS_TRUE(not_expired)) {
@@ -648,7 +648,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, increment){
 			PHALCON_THROW_EXCEPTION_STR(phalcon_cache_exception_ce, "The cache is currupted");
 			return;
 		}
-	
+
 		PHALCON_OBS_VAR(cached_content);
 		phalcon_array_fetch_string(&cached_content, document, SL("data"), PH_NOISY);
 
@@ -659,7 +659,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, increment){
 
 		if (phalcon_is_numeric(cached_content)) {
 			add_function(return_value, cached_content, value TSRMLS_CC);
-				
+
 			PHALCON_INIT_NVAR(ttl);
 			phalcon_add_function(ttl, lifetime, timestamp TSRMLS_CC);
 
@@ -668,7 +668,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, increment){
 
 		RETURN_MM();
 	}
-	
+
 	RETURN_MM_NULL();
 }
 
@@ -693,33 +693,33 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, decrement){
 	if (!value) {
 		PHALCON_INIT_VAR(value);
 		ZVAL_LONG(value, 1);
-	} 
+	}
 
 	if(Z_TYPE_P(value) == IS_NULL) {
 		ZVAL_LONG(value, 1);
 	}
 
-	if (Z_TYPE_P(value) != IS_LONG) {	
+	if (Z_TYPE_P(value) != IS_LONG) {
 		PHALCON_SEPARATE_PARAM(value);
 		convert_to_long_ex(&value);
 	}
 
 	PHALCON_OBS_VAR(frontend);
 	phalcon_read_property_this(&frontend, this_ptr, SL("_frontend"), PH_NOISY TSRMLS_CC);
-	
+
 	PHALCON_OBS_VAR(prefix);
 	phalcon_read_property_this(&prefix, this_ptr, SL("_prefix"), PH_NOISY TSRMLS_CC);
 
 	PHALCON_INIT_VAR(prefixed_key);
 	PHALCON_CONCAT_VV(prefixed_key, prefix, key_name);
 	phalcon_update_property_this(this_ptr, SL("_lastKey"), prefixed_key TSRMLS_CC);
-	
+
 	PHALCON_CALL_METHOD(&collection, this_ptr, "_getcollection");
-	
+
 	PHALCON_INIT_VAR(conditions);
 	array_init_size(conditions, 1);
 	phalcon_array_update_string(&conditions, SL("key"), prefixed_key, PH_COPY);
-	
+
 	PHALCON_CALL_METHOD(&document, collection, "findone", conditions);
 
 	PHALCON_INIT_VAR(timestamp);
@@ -737,22 +737,22 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, decrement){
 	/*
 	 * phalcon_add_function(newlifetime, ttl, timestamp TSRMLS_CC);
 	 */
-	
+
 	if (!phalcon_array_isset_string(document, SS("time"))) {
 		PHALCON_THROW_EXCEPTION_STR(phalcon_cache_exception_ce, "The cache is currupted");
 		return;
 	}
-	
+
 	PHALCON_OBS_VAR(modified_time);
 	phalcon_array_fetch_string(&modified_time, document, SL("time"), PH_NOISY);
-	
+
 	PHALCON_INIT_VAR(difference);
 	sub_function(difference, timestamp, ttl TSRMLS_CC);
-	
+
 	PHALCON_INIT_VAR(not_expired);
 	is_smaller_function(not_expired, difference, modified_time TSRMLS_CC);
-	
-	/** 
+
+	/**
 	 * The expiration is based on the column 'time'
 	 */
 	if (PHALCON_IS_TRUE(not_expired)) {
@@ -760,7 +760,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, decrement){
 			PHALCON_THROW_EXCEPTION_STR(phalcon_cache_exception_ce, "The cache is currupted");
 			return;
 		}
-	
+
 		PHALCON_OBS_VAR(cached_content);
 		phalcon_array_fetch_string(&cached_content, document, SL("data"), PH_NOISY);
 
@@ -771,7 +771,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, decrement){
 
 		if (phalcon_is_numeric(cached_content)) {
 			sub_function(return_value, cached_content, value TSRMLS_CC);
-				
+
 			PHALCON_INIT_NVAR(ttl);
 			phalcon_add_function(ttl, lifetime, timestamp TSRMLS_CC);
 
@@ -780,13 +780,13 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, decrement){
 
 		RETURN_MM();
 	}
-	
+
 	RETURN_MM_NULL();
 }
 
 /**
  * Immediately invalidates all existing items.
- * 
+ *
  * @return bool
  */
 PHP_METHOD(Phalcon_Cache_Backend_Mongo, flush){
@@ -794,7 +794,7 @@ PHP_METHOD(Phalcon_Cache_Backend_Mongo, flush){
 	zval *collection = NULL;
 
 	PHALCON_MM_GROW();
-	
+
 	PHALCON_CALL_METHOD(&collection, this_ptr, "_getcollection");
 	PHALCON_CALL_METHOD(NULL, collection, "remove");
 

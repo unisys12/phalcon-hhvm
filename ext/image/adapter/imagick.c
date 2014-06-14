@@ -310,7 +310,7 @@ PHP_METHOD(Phalcon_Image_Adapter_Imagick, _resize) {
  *
  * @param int $width   new width
  * @param int $height  new height
- * @param int $delta_x How much the seam can traverse on x-axis. Passing 0 causes the seams to be straight. 
+ * @param int $delta_x How much the seam can traverse on x-axis. Passing 0 causes the seams to be straight.
  * @param int $rigidity Introduces a bias for non-straight seams. This parameter is typically 0.
  */
 PHP_METHOD(Phalcon_Image_Adapter_Imagick, _liquidRescale){
@@ -455,7 +455,7 @@ PHP_METHOD(Phalcon_Image_Adapter_Imagick, _flip) {
 	PHALCON_MM_GROW();
 
 	im     = phalcon_fetch_nproperty_this(this_ptr, SL("_image"), PH_NOISY TSRMLS_CC);
-	method = (Z_LVAL_PP(direction) == 11) ? "flopImage" : "flipImage";
+	method = (Z_RESVAL_PP(direction) == 11) ? "flopImage" : "flipImage";
 
 	PHALCON_CALL_METHOD(NULL, im, "setIteratorIndex", PHALCON_GLOBAL(z_zero));
 
@@ -599,7 +599,7 @@ PHP_METHOD(Phalcon_Image_Adapter_Imagick, _reflection) {
 
 	PHALCON_INIT_VAR(channel);
 	phalcon_get_class_constant(channel, imagick_ce, SS("CHANNEL_ALPHA") TSRMLS_CC);
- 
+
 
 	PHALCON_CALL_METHOD(NULL, reflection, "setIteratorIndex", zero);
 
@@ -732,7 +732,7 @@ PHP_METHOD(Phalcon_Image_Adapter_Imagick, _watermark) {
 		PHALCON_INIT_NVAR(op_constant);
 		phalcon_get_class_constant(op_constant, ce0, SS("EVALUATE_MULTIPLY") TSRMLS_CC);
 
-		num = Z_LVAL_P(opacity) / 100;
+		num = Z_RESVAL_P(opacity) / 100;
 
 		PHALCON_INIT_NVAR(op);
 		ZVAL_DOUBLE(op, num);
@@ -1002,7 +1002,7 @@ PHP_METHOD(Phalcon_Image_Adapter_Imagick, _text) {
 
 					PHALCON_INIT_VAR(gravity);
 					phalcon_get_class_constant(gravity, imagick_ce, SS("GRAVITY_SOUTHEAST") TSRMLS_CC);
-				} else {					
+				} else {
 					PHALCON_INIT_NVAR(offset_x);
 					ZVAL_LONG(offset_x, x * -1);
 
@@ -1019,7 +1019,7 @@ PHP_METHOD(Phalcon_Image_Adapter_Imagick, _text) {
 
 					PHALCON_INIT_VAR(gravity);
 					phalcon_get_class_constant(gravity, imagick_ce, SS("GRAVITY_SOUTHWEST") TSRMLS_CC);
-				} else {					
+				} else {
 					PHALCON_INIT_NVAR(offset_x);
 					ZVAL_LONG(offset_x, 0);
 
@@ -1029,7 +1029,7 @@ PHP_METHOD(Phalcon_Image_Adapter_Imagick, _text) {
 			}
 		}
 	}
-	
+
 	PHALCON_CALL_METHOD(NULL, draw, "setgravity", gravity);
 	PHALCON_CALL_METHOD(NULL, im, "annotateImage", draw, offset_x, offset_y, tmp_a, *text);
 
@@ -1115,7 +1115,7 @@ PHP_METHOD(Phalcon_Image_Adapter_Imagick, _background) {
 	PHALCON_INIT_VAR(format);
 	ZVAL_STRING(format, "rgb(%d, %d, %d)", 1);
 	PHALCON_CALL_FUNCTION(&color, "sprintf", format, r, g, b);
-	
+
 	PHALCON_INIT_VAR(background);
 	object_init_ex(background, imagick_ce);
 	if (phalcon_has_constructor(background TSRMLS_CC)) {
@@ -1227,7 +1227,7 @@ PHP_METHOD(Phalcon_Image_Adapter_Imagick, _pixelate){
 	phalcon_fetch_params_ex(1, 0, &amount);
 	PHALCON_ENSURE_IS_LONG(amount);
 
-	if (Z_LVAL_PP(amount) < 2) {
+	if (Z_RESVAL_PP(amount) < 2) {
 		ZVAL_LONG(*amount, 2);
 	}
 
@@ -1237,8 +1237,8 @@ PHP_METHOD(Phalcon_Image_Adapter_Imagick, _pixelate){
 	width  = phalcon_fetch_nproperty_this(this_ptr, SL("_width"), PH_NOISY TSRMLS_CC);
 	height = phalcon_fetch_nproperty_this(this_ptr, SL("_height"), PH_NOISY TSRMLS_CC);
 
-	w = (int)((phalcon_get_intval(width) / Z_LVAL_PP(amount)) + 0.5);
-	h = (int)((phalcon_get_intval(height) / Z_LVAL_PP(amount)) + 0.5);
+	w = (int)((phalcon_get_intval(width) / Z_RESVAL_PP(amount)) + 0.5);
+	h = (int)((phalcon_get_intval(height) / Z_RESVAL_PP(amount)) + 0.5);
 
 	PHALCON_INIT_VAR(tmp_width);
 	PHALCON_INIT_VAR(tmp_height);

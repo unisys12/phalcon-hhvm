@@ -70,12 +70,12 @@ PHP_METHOD(Phalcon_Logger_Formatter, getTypeString){
 
 	phalcon_fetch_params_ex(1, 0, &type);
 	PHALCON_ENSURE_IS_LONG(type);
-	
-	itype = Z_LVAL_PP(type);
+
+	itype = Z_RESVAL_PP(type);
 	if (itype >= 0 && itype < 10) {
 		RETURN_STRING(lut[itype], 1);
 	}
-	
+
 	RETURN_STRING("CUSTOM", 1);
 }
 

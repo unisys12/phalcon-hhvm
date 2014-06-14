@@ -48,7 +48,7 @@ int phalcon_array_isset_fetch(zval **fetched, const zval *arr, const zval *index
 		case IS_LONG:
 		case IS_BOOL:
 		case IS_RESOURCE:
-			result = zend_hash_index_find(h, Z_LVAL_P(index), (void**)&val);
+			result = zend_hash_index_find(h, Z_RESVAL_P(index), (void**)&val);
 			break;
 
 		case IS_STRING:
@@ -115,7 +115,7 @@ int phalcon_array_isset(const zval *arr, const zval *index) {
 		case IS_BOOL:
 		case IS_LONG:
 		case IS_RESOURCE:
-			return zend_hash_index_exists(h, Z_LVAL_P(index));
+			return zend_hash_index_exists(h, Z_RESVAL_P(index));
 
 		case IS_STRING:
 			return zend_symtable_exists(h, Z_STRVAL_P(index), Z_STRLEN_P(index)+1);
@@ -168,7 +168,7 @@ int phalcon_array_unset(zval **arr, const zval *index, int flags) {
 		case IS_LONG:
 		case IS_BOOL:
 		case IS_RESOURCE:
-			return (zend_hash_index_del(ht, Z_LVAL_P(index)) == SUCCESS);
+			return (zend_hash_index_del(ht, Z_RESVAL_P(index)) == SUCCESS);
 
 		case IS_STRING:
 			return (zend_symtable_del(ht, Z_STRVAL_P(index), Z_STRLEN_P(index)+1) == SUCCESS);
@@ -252,7 +252,7 @@ int phalcon_array_update_zval(zval **arr, const zval *index, zval *value, int fl
 		case IS_LONG:
 		case IS_BOOL:
 		case IS_RESOURCE:
-			status = zend_hash_index_update(ht, Z_LVAL_P(index), (void*)&value, sizeof(zval*), NULL);
+			status = zend_hash_index_update(ht, Z_RESVAL_P(index), (void*)&value, sizeof(zval*), NULL);
 			break;
 
 		case IS_STRING:
@@ -332,7 +332,7 @@ int phalcon_array_fetch(zval **return_value, const zval *arr, const zval *index,
 			case IS_LONG:
 			case IS_BOOL:
 			case IS_RESOURCE:
-				uidx   = Z_LVAL_P(index);
+				uidx   = Z_RESVAL_P(index);
 				result = zend_hash_index_find(ht, uidx, (void**) &zv);
 				break;
 
@@ -902,7 +902,7 @@ int phalcon_array_key_exists(zval *arr, zval *key TSRMLS_DC)
 				return zend_symtable_exists(h, Z_STRVAL_P(key), Z_STRLEN_P(key) + 1);
 
 			case IS_LONG:
-				return zend_hash_index_exists(h, Z_LVAL_P(key));
+				return zend_hash_index_exists(h, Z_RESVAL_P(key));
 
 			case IS_NULL:
 				return zend_hash_exists(h, "", 1);

@@ -131,7 +131,7 @@ long int phalcon_fast_count_int(zval *value TSRMLS_DC) {
 			zend_call_method_with_0_params(&value, Z_OBJCE_P(value), NULL, "count", &retval);
 			if (retval) {
 				convert_to_long_ex(&retval);
-				result = Z_LVAL_P(retval);
+				result = Z_RESVAL_P(retval);
 				zval_ptr_dtor(&retval);
 			}
 
@@ -166,7 +166,7 @@ void phalcon_fast_count(zval *result, zval *value TSRMLS_DC) {
 
 		if (Z_OBJ_HT_P(value)->count_elements) {
 			ZVAL_LONG(result, 1);
-			if (SUCCESS == Z_OBJ_HT(*value)->count_elements(value, &Z_LVAL_P(result) TSRMLS_CC)) {
+			if (SUCCESS == Z_OBJ_HT(*value)->count_elements(value, &Z_RESVAL_P(result) TSRMLS_CC)) {
 				return;
 			}
 		}
@@ -176,7 +176,7 @@ void phalcon_fast_count(zval *result, zval *value TSRMLS_DC) {
 			zend_call_method_with_0_params(&value, NULL, NULL, "count", &retval);
 			if (retval) {
 				convert_to_long_ex(&retval);
-				ZVAL_LONG(result, Z_LVAL_P(retval));
+				ZVAL_LONG(result, Z_RESVAL_P(retval));
 				zval_ptr_dtor(&retval);
 			}
 			return;
@@ -222,7 +222,7 @@ int phalcon_fast_count_ev(zval *value TSRMLS_DC) {
 			zend_call_method_with_0_params(&value, NULL, NULL, "count", &retval);
 			if (retval) {
 				convert_to_long_ex(&retval);
-				count = Z_LVAL_P(retval);
+				count = Z_RESVAL_P(retval);
 				zval_ptr_dtor(&retval);
 				return (int) count > 0;
 			}

@@ -198,7 +198,7 @@ int phalcon_hash_update_or_insert(HashTable *ht, const zval *key, zval *value)
 		case IS_DOUBLE:
 		case IS_BOOL:
 		case IS_LONG:
-			return zend_hash_index_update(ht, ((Z_TYPE_P(key) == IS_DOUBLE) ? (ulong)Z_DVAL_P(key) : (ulong)Z_LVAL_P(key)), (void*)&value, sizeof(zval*), NULL);
+			return zend_hash_index_update(ht, ((Z_TYPE_P(key) == IS_DOUBLE) ? (ulong)Z_DVAL_P(key) : (ulong)Z_RESVAL_P(key)), (void*)&value, sizeof(zval*), NULL);
 
 		default:
 			zend_error(E_WARNING, "Illegal offset type");
@@ -228,12 +228,12 @@ zval** phalcon_hash_get(HashTable *ht, const zval *key, int type)
 
 	switch (Z_TYPE_P(key)) {
 		case IS_RESOURCE:
-			zend_error(E_STRICT, "Resource ID#%ld used as offset, casting to integer (%ld)", Z_LVAL_P(key), Z_LVAL_P(key));
+			zend_error(E_STRICT, "Resource ID#%ld used as offset, casting to integer (%ld)", Z_RESVAL_P(key), Z_RESVAL_P(key));
 			/* no break */
 		case IS_LONG:
 		case IS_DOUBLE:
 		case IS_BOOL: {
-			ulong index = (Z_TYPE_P(key) == IS_DOUBLE) ? ((long int)Z_DVAL_P(key)) : Z_LVAL_P(key);
+			ulong index = (Z_TYPE_P(key) == IS_DOUBLE) ? ((long int)Z_DVAL_P(key)) : Z_RESVAL_P(key);
 			if (FAILURE == zend_hash_index_find(ht, index, (void**)&ret)) {
 				switch (type) {
 					case BP_VAR_R:
@@ -309,7 +309,7 @@ int phalcon_hash_unset(HashTable *ht, const zval *key)
 		case IS_DOUBLE:
 		case IS_BOOL:
 		case IS_RESOURCE:
-			return (zend_hash_index_del(ht, (Z_TYPE_P(key) == IS_DOUBLE) ? ((long int)Z_DVAL_P(key)) : Z_LVAL_P(key)) == SUCCESS);
+			return (zend_hash_index_del(ht, (Z_TYPE_P(key) == IS_DOUBLE) ? ((long int)Z_DVAL_P(key)) : Z_RESVAL_P(key)) == SUCCESS);
 
 		case IS_STRING:
 			return (zend_symtable_del(ht, Z_STRVAL_P(key), Z_STRLEN_P(key)+1) == SUCCESS);
@@ -342,12 +342,12 @@ zval** phalcon_hash_fast_get(HashTable *ht, int type, const zend_literal* key)
 
 	switch (Z_TYPE(key->constant)) {
 		case IS_RESOURCE:
-			zend_error(E_STRICT, "Resource ID#%ld used as offset, casting to integer (%ld)", Z_LVAL(key->constant), Z_LVAL(key->constant));
+			zend_error(E_STRICT, "Resource ID#%ld used as offset, casting to integer (%ld)", Z_RESVAL(key->constant), Z_RESVAL(key->constant));
 			/* no break */
 		case IS_LONG:
 		case IS_DOUBLE:
 		case IS_BOOL: {
-			ulong index = (Z_TYPE(key->constant) == IS_DOUBLE) ? ((long int)Z_DVAL(key->constant)) : Z_LVAL(key->constant);
+			ulong index = (Z_TYPE(key->constant) == IS_DOUBLE) ? ((long int)Z_DVAL(key->constant)) : Z_RESVAL(key->constant);
 			if (FAILURE == zend_hash_index_find(ht, index, (void**)&ret)) {
 				switch (type) {
 					case BP_VAR_R:
@@ -444,7 +444,7 @@ int phalcon_hash_quick_update_or_insert(HashTable *ht, zval *value, const zend_l
 		case IS_DOUBLE:
 		case IS_BOOL:
 		case IS_LONG:
-			return zend_hash_index_update(ht, ((Z_TYPE(key->constant) == IS_DOUBLE) ? (ulong)Z_DVAL(key->constant) : (ulong)Z_LVAL(key->constant)), (void*)&value, sizeof(zval*), NULL);
+			return zend_hash_index_update(ht, ((Z_TYPE(key->constant) == IS_DOUBLE) ? (ulong)Z_DVAL(key->constant) : (ulong)Z_RESVAL(key->constant)), (void*)&value, sizeof(zval*), NULL);
 
 		default:
 			zend_error(E_WARNING, "Illegal offset type");
@@ -465,7 +465,7 @@ int phalcon_hash_fast_unset(HashTable *ht, const zend_literal *key)
 		case IS_DOUBLE:
 		case IS_BOOL:
 		case IS_RESOURCE:
-			return (zend_hash_index_del(ht, (Z_TYPE(key->constant) == IS_DOUBLE) ? ((ulong)Z_DVAL(key->constant)) : (ulong)Z_LVAL(key->constant)) == SUCCESS);
+			return (zend_hash_index_del(ht, (Z_TYPE(key->constant) == IS_DOUBLE) ? ((ulong)Z_DVAL(key->constant)) : (ulong)Z_RESVAL(key->constant)) == SUCCESS);
 
 		case IS_STRING:
 			if (*(Z_STRVAL(key->constant)) >= '0' && *(Z_STRVAL(key->constant)) <= '9') {
