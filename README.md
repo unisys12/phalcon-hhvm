@@ -10,7 +10,7 @@ Repo for playing with the idea of getting PhalconPHP extension to work with HHVM
 Before learning of this idea, I looked at Phalcon and HHVM being two totally different approaches to solve the same problem. PHP can be slow and does not scale all that well in very large environments. Both projects address these problems, but in two different ways. Phalcon, of course, is a PHP framework written as a PHP extension. It runs on your server, just like *mcrypt* or *mongodb*. So, why would someone want to run Phalcon in an HHVM environment? Why not! Phalcon is already fast. Anyone that uses Phalcon knows that. But so is HHVM. HHVM has support for existing PHP extensions(rewritten of course), so why not take advantage of the amazing steps made by the HHVM team and put the fastest framework inside the fastest environment.
 
 ##To-Do-List
-This list is a simplified version of the README over on HHVM's repo. Items will be striked off/added as needed.
+This list is a simplified version of the README over on HHVM's repo. We will strike off/added as needed.
 
 - [x] Move all .c to .cpp (`for i in phalcon-hhvm/**/**/*.c; do mv $i "$i"pp; done`)
 - [ ] Create a system library at runtime/ext_zend_compat/ext_.php This system library contains definitions for any functions and classes that have C implementations in your extension. All functions should have the __Native("ZendCompat") attribute. Internal classes should have the __NativeData("ZendCompat") attribute.
@@ -19,6 +19,7 @@ This list is a simplified version of the README over on HHVM's repo. Items will 
 - [ ] Don't use PHP_MALIAS. Define the other function.
 - [ ] Change any ZVAL_STRING(foo, "literal string", 0) to ZVAL_STRING(foo, "literal string", 2)
 - [ ] Allocate hashtables with ALLOC_HASHTABLE() and zvals with ALLOC_ZVAL() or one of the macros that calls ALLOC_ZVAL(), don't allocate them directly. Don't use malloc(sizeof(zval)) or create them on the stack.
+- [ ] After doing some [reading](http://en.wikipedia.org/wiki/Compatibility_of_C_and_C%2B%2B) and learning, we will need to traverse through the code-base and convert everything over to proper C++ code(proper use of structs, arrays, libraries that might need to be called, etc...). I am sure the above linked reference is just the tip of the ice burg. But one chunk at a time, right?
 
 ## File structure
 
