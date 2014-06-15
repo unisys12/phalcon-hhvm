@@ -16,7 +16,7 @@
 
 # Check best compilation flags for GCC
 export CC="gcc"
-export CFLAGS="-march=native -mtune=native -O2 -finline-functions -fomit-frame-pointer"
+export CFLAGS="-march=native -mtune=native -O2 -finline-functions -fomit-frame-pointer -lstdc++"
 export CPPFLAGS="-DPHALCON_RELEASE"
 echo "int main() {}" > t.c
 gcc $CFLAGS t.c -o t 2> t.t
