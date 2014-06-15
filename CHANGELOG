@@ -9,3 +9,4 @@
 - Updated Readme To-Do-List items completed
 - Added reference, in Readme To-Do-List, concerning differences between C and C++. If we end up getting a lot of random C++ compile errors, we should refer to this and deal with the code-base as needed.
 - Updated Contributing markdown file
+- Update Readme To-Do-List to reflect that all zvals and hashtables "should" implemented properly.
