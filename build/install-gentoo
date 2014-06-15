@@ -39,7 +39,7 @@ rm -f t.t t.c t
 #Check processor architecture
 if [ -z $1 ]; then
 	DIR="32bits"
-	gcc gccarch.c -o gccarch
+	gcc gccarch.cpp -o gccarch
 	if [ -f gccarch ]; then
 		P64BITS=`./gccarch`
 		if [ "$P64BITS" == "1" ]; then
