@@ -12,9 +12,9 @@ Before learning of this idea, I looked at Phalcon and HHVM being two totally dif
 ##To-Do-List
 This list is a simplified version of the README over on HHVM's repo. Items will be striked off/added as needed.
 
-- [ ] Move all .c to .cpp (`for i in runtime/ext_zend_compat/<ext_name>/*.c; do mv $i "$i"pp; done`)
+- [x] Move all .c to .cpp (`for i in phalcon-hhvm/**/**/*.c; do mv $i "$i"pp; done`)
 - [ ] Create a system library at runtime/ext_zend_compat/ext_.php This system library contains definitions for any functions and classes that have C implementations in your extension. All functions should have the __Native("ZendCompat") attribute. Internal classes should have the __NativeData("ZendCompat") attribute.
-- [ ] C++ compile errors
+- [ ] Fix any C++ compile errors
 - [x] Use Z_RESVAL instead of Z_LVAL for resource access
 - [ ] Don't use PHP_MALIAS. Define the other function.
 - [ ] Change any ZVAL_STRING(foo, "literal string", 0) to ZVAL_STRING(foo, "literal string", 2)
