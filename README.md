@@ -23,7 +23,7 @@ This list is a simplified version of the README over on HHVM's repo. We will str
 - [x] Use Z_RESVAL instead of Z_LVAL for resource access
 - [ ] Don't use PHP_MALIAS. Define the other function.
 - [ ] Change any ZVAL_STRING(foo, "literal string", 0) to ZVAL_STRING(foo, "literal string", 2)
-- [ ] Allocate hashtables with ALLOC_HASHTABLE() and zvals with ALLOC_ZVAL() or one of the macros that calls ALLOC_ZVAL(), don't allocate them directly. Don't use malloc(sizeof(zval)) or create them on the stack.
+- [x] Allocate hashtables with ALLOC_HASHTABLE() and zvals with ALLOC_ZVAL() or one of the macros that calls ALLOC_ZVAL(), don't allocate them directly. Don't use malloc(sizeof(zval)) or create them on the stack.
 - [ ] After doing some [reading](http://en.wikipedia.org/wiki/Compatibility_of_C_and_C%2B%2B) and learning, we will need to traverse through the code-base and convert everything over to proper C++ code(proper use of structs, arrays, libraries that might need to be called, etc...). I am sure the above linked reference is just the tip of the ice burg. But one cube of ice at a time, right?
 - [ ] Fix any C++ compile errors
 
